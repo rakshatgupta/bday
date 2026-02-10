@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Jiju 🎂</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe6f0, #ffd1a9);
+      font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
+      overflow: hidden;
+    }
+
+    .cake {
+      position: relative;
+      width: 220px;
+      height: 140px;
+      background: #d2691e;
+      border-radius: 12px;
+      box-shadow: inset 0 0 0 6px #f4a460;
+      transition: transform 1s ease;
+    }
+
+    .cake.move-down {
+      transform: translateY(60px);
+    }
+
+    .cake::before {
+      content: "";
+      position: absolute;
+      top: -25px;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: #ffb6c1;
+      border-radius: 12px 12px 8px 8px;
+    }
+
+    .candles {
+      position: absolute;
+      top: -55px;
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    .candle {
+      width: 10px;
+      height: 40px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffffff,
+        #ffffff 4px,
+        #ff69b4 4px,
+        #ff69b4 8px
+      );
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .flame {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 14px;
+      background: radial-gradient(circle, #fff176, #ff9800, #f44336);
+      border-radius: 50% 50% 50% 50%;
+      animation: flicker 0.15s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { transform: translateX(-50%) scale(1); }
+      to { transform: translateX(-50%) scale(0.85); }
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 14px 28px;
+      font-size: 18px;
+      border: none;
+      border-radius: 30px;
+      background: #ff4081;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #c2185b;
+      transition: transform 1s ease;
+    }
+
+    button.move-down {
+      transform: translateY(60px);
+    }
+
+    button:active {
+      box-shadow: 0 2px 0 #c2185b;
+      transform: translateY(4px);
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .banner {
+      position: fixed;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #7b1fa2;
+      color: white;
+      padding: 20px 40px 30px;
+      font-size: 32px;
+      font-weight: bold;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transition: top 1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .banner.show {
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="banner" id="banner">
+    <img src="jiju.png" alt="Birthday" style="width:60px;margin-bottom:10px;" />
+    <div>HAPPY BIRTHDAY JIJU 🎉</div>
+  </div>
+
+  <div class="cake" id="cake">
+    <div class="candles">
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+    </div>
+  </div>
+
+  <button id="blowBtn">Click to blow off the candles 💨</button>
+
+  <canvas id="confetti"></canvas>
+
+  <script>
+    const btn = document.getElementById('blowBtn');
+    const flames = document.querySelectorAll('.flame');
+    const banner = document.getElementById('banner');
+    const cake = document.getElementById('cake');
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confetti = [];
+
+    function launchConfetti() {
+      for (let i = 0; i < 200; i++) {
+        confetti.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          r: Math.random() * 6 + 4,
+          dx: (Math.random() - 0.5) * 10,
+          dy: (Math.random() - 0.8) * 12,
+          color: `hsl(${Math.random() * 360}, 100%, 60%)`
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((p, i) => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.dy += 0.3;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if (p.y > canvas.height) confetti.splice(i, 1);
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+
+    btn.addEventListener('click', () => {
+      flames.forEach(f => f.style.display = 'none');
+      launchConfetti();
+      banner.classList.add('show');
+      cake.classList.add('move-down');
+      btn.classList.add('move-down');
+      drawConfetti();
+      btn.disabled = true;
+      btn.textContent = '😊 Have a nice day!';
+    });
+  </script>
+
+</body>
+</html>
