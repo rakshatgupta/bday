@@ -154,6 +154,10 @@
 
   <canvas id="confetti"></canvas>
 
+  <audio id="birthdayMusic" preload="auto">
+    <source src="bday.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
     const btn = document.getElementById('blowBtn');
     const flames = document.querySelectorAll('.flame');
@@ -161,6 +165,7 @@
     const cake = document.getElementById('cake');
     const canvas = document.getElementById('confetti');
     const ctx = canvas.getContext('2d');
+    const music = document.getElementById('birthdayMusic');
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -202,6 +207,10 @@
       cake.classList.add('move-down');
       btn.classList.add('move-down');
       drawConfetti();
+
+      music.volume = 0.6;
+      music.play();
+
       btn.disabled = true;
       btn.textContent = '😊 Have a nice day!';
     });
